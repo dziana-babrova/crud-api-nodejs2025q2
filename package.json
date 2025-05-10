@@ -3,10 +3,10 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.ts",
+  "type": "module",
   "scripts": {
     "build": "webpack",
-    "start": "webpack serve",
-    "dev": "nodemon app.ts",
+    "dev": "nodemon",
     "lint": "eslint . --ext .ts,.js,.tsx",
     "format": "prettier . --write"
   },
@@ -37,7 +37,8 @@
     "typescript-eslint": "^8.32.0",
     "webpack": "^5.99.8",
     "webpack-cli": "^6.0.1",
-    "webpack-dev-server": "^5.2.1"
+    "webpack-dev-server": "^5.2.1",
+    "webpack-node-externals": "^3.0.0"
   },
   "dependencies": {
     "dotenv": "^16.5.0",
