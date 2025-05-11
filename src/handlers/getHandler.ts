@@ -3,6 +3,7 @@ import { sendResponse } from '../helpers/sendResponse';
 import { ERRORS } from '../consts/errors';
 import { STATUS_CODES } from '../consts/statusCodes';
 import { users } from '../database/users';
+import { validate } from 'uuid';
 
 export const handleGetRequest = async (
   _request: IncomingMessage,
@@ -13,7 +14,7 @@ export const handleGetRequest = async (
     sendResponse(response, STATUS_CODES.SUCCESS, users);
   } else if (pathname && pathname.startsWith('api/users/')) {
     const id = pathname.split('/').pop();
-    if (id) {
+    if (id && validate(id)) {
       const data = users.find((user) => user.id === id);
       if (data) {
         sendResponse(response, STATUS_CODES.SUCCESS, data);

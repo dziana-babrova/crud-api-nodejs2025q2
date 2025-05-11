@@ -8,6 +8,7 @@ import { handlePutRequest } from './handlers/putHaldler';
 import { handleDeleteRequest } from './handlers/deleteHandler';
 import { sendResponse } from './helpers/sendResponse';
 import { STATUS_CODES } from './consts/statusCodes';
+import { ERRORS } from './consts/errors';
 
 const server = createServer(
   async (request: IncomingMessage, response: ServerResponse) => {
@@ -22,7 +23,7 @@ const server = createServer(
     } else if (method === METHODS.PUT) {
       await handlePutRequest(request, response, path);
     } else if (method === METHODS.DELETE) {
-      await handleDeleteRequest();
+      await handleDeleteRequest(request, response, path);
     } else {
       sendResponse(response, STATUS_CODES.NOT_FOUND, {});
     }

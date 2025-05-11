@@ -20,16 +20,18 @@ export const handlePostRequest = async (
         user.push(validatedUser);
         sendResponse(response, STATUS_CODES.CREATED, validatedUser);
       } else {
-        sendResponse(
-          response,
-          STATUS_CODES.BAD_REQUEST,
-          ERRORS.MISSING_REQUIRED_FIELD
-        );
+        sendResponse(response, STATUS_CODES.BAD_REQUEST, {
+          error: ERRORS.MISSING_REQUIRED_FIELD,
+        });
       }
     } catch {
-      sendResponse(response, STATUS_CODES.BAD_REQUEST, ERRORS.INVALID_BODY);
+      sendResponse(response, STATUS_CODES.BAD_REQUEST, {
+        error: ERRORS.INVALID_BODY,
+      });
     }
   } else {
-    sendResponse(response, STATUS_CODES.NOT_FOUND, ERRORS.ENDPOINT_NOT_FOUND);
+    sendResponse(response, STATUS_CODES.NOT_FOUND, {
+      error: ERRORS.ENDPOINT_NOT_FOUND,
+    });
   }
 };
