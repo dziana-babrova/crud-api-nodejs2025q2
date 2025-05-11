@@ -8,7 +8,6 @@ import { handlePutRequest } from './handlers/putHaldler';
 import { handleDeleteRequest } from './handlers/deleteHandler';
 import { sendResponse } from './helpers/sendResponse';
 import { STATUS_CODES } from './consts/statusCodes';
-import { CONTENT_TYPE } from './consts/contentTypes';
 
 const server = createServer(
   async (request: IncomingMessage, response: ServerResponse) => {
@@ -17,7 +16,7 @@ const server = createServer(
     const path = parsedUrl.pathname;
 
     if (method === METHODS.GET) {
-      await handleGetRequest();
+      await handleGetRequest(request, response, path);
     } else if (method === METHODS.POST) {
       await handlePostRequest();
     } else if (method === METHODS.PUT) {
@@ -25,7 +24,7 @@ const server = createServer(
     } else if (method === METHODS.DELETE) {
       await handleDeleteRequest();
     } else {
-      sendResponse(response, STATUS_CODES.NOT_FOUND, CONTENT_TYPE.JSON, {});
+      sendResponse(response, STATUS_CODES.NOT_FOUND, {});
     }
   }
 );

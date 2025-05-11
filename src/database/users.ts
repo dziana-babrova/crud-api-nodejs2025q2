@@ -1,5 +1,5 @@
 export type usersType = {
-  id: string;
+  id: number;
   username: string;
   age: number;
   hobbies: string[];
