@@ -9,24 +9,17 @@ export const handleGetRequest = async (
   response: ServerResponse,
   pathname: string | null
 ) => {
-  if ((pathname && pathname === 'api/users') || pathname === 'api/users/') {
+  if ((pathname && pathname === '/api/users') || pathname === '/api/users/') {
     sendResponse(response, STATUS_CODES.SUCCESS, users);
   } else if (pathname && pathname.startsWith('api/users/')) {
     const id = pathname.split('/').pop();
     if (id) {
-      const parsedId = parseInt(id);
-      if (parsedId) {
-        const data = users.find((user) => user.id === parsedId);
-        if (data) {
-          sendResponse(response, STATUS_CODES.SUCCESS, data);
-        } else {
-          sendResponse(response, STATUS_CODES.NOT_FOUND, {
-            error: ERRORS.USER_NOT_FOUND,
-          });
-        }
+      const data = users.find((user) => user.id === id);
+      if (data) {
+        sendResponse(response, STATUS_CODES.SUCCESS, data);
       } else {
-        sendResponse(response, STATUS_CODES.BAD_REQUEST, {
-          error: ERRORS.USERID_NOT_VALID,
+        sendResponse(response, STATUS_CODES.NOT_FOUND, {
+          error: ERRORS.USER_NOT_FOUND,
         });
       }
     } else {

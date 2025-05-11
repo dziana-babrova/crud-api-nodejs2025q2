@@ -14,11 +14,12 @@ const server = createServer(
     const method = request.method;
     const parsedUrl = parse(request.url || '', true);
     const path = parsedUrl.pathname;
+    console.log(parsedUrl);
 
     if (method === METHODS.GET) {
       await handleGetRequest(request, response, path);
     } else if (method === METHODS.POST) {
-      await handlePostRequest();
+      await handlePostRequest(request, response, path);
     } else if (method === METHODS.PUT) {
       await handlePutRequest();
     } else if (method === METHODS.DELETE) {
