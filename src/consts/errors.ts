@@ -4,4 +4,5 @@ export const ERRORS = {
   USER_NOT_FOUND: `Record with this id doesn't exist`,
   INVALID_BODY: 'Invalid request body',
   MISSING_REQUIRED_FIELD: 'Request body does not contain required fields',
+  SERVER_ERROR: 'Server error occurred when processing request',
 };

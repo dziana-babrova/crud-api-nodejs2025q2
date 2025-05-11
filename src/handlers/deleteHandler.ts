@@ -15,7 +15,7 @@ export const handleDeleteRequest = async (
     if (id && validate(id)) {
       const userIndex = users.findIndex((user) => user.id === id);
       if (userIndex !== -1) {
-        users.splice(userIndex);
+        users.splice(userIndex, 1);
         sendResponse(response, STATUS_CODES.DELETED, 'Deleted successfully');
       } else {
         sendResponse(response, STATUS_CODES.NOT_FOUND, {

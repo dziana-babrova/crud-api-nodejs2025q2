@@ -12,20 +12,28 @@ import { ERRORS } from './consts/errors';
 
 const server = createServer(
   async (request: IncomingMessage, response: ServerResponse) => {
-    const method = request.method;
-    const parsedUrl = parse(request.url || '', true);
-    const path = parsedUrl.pathname;
+    try {
+      const method = request.method;
+      const parsedUrl = parse(request.url || '', true);
+      const path = parsedUrl.pathname;
 
-    if (method === METHODS.GET) {
-      await handleGetRequest(request, response, path);
-    } else if (method === METHODS.POST) {
-      await handlePostRequest(request, response, path);
-    } else if (method === METHODS.PUT) {
-      await handlePutRequest(request, response, path);
-    } else if (method === METHODS.DELETE) {
-      await handleDeleteRequest(request, response, path);
-    } else {
-      sendResponse(response, STATUS_CODES.NOT_FOUND, {});
+      if (method === METHODS.GET) {
+        await handleGetRequest(request, response, path);
+      } else if (method === METHODS.POST) {
+        await handlePostRequest(request, response, path);
+      } else if (method === METHODS.PUT) {
+        await handlePutRequest(request, response, path);
+      } else if (method === METHODS.DELETE) {
+        await handleDeleteRequest(request, response, path);
+      } else {
+        sendResponse(response, STATUS_CODES.NOT_FOUND, {});
+      }
+    } catch {
+      sendResponse(
+        response,
+        STATUS_CODES.SERVER_UNAVAILABLE,
+        ERRORS.SERVER_ERROR
+      );
     }
   }
 );
