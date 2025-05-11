@@ -1,26 +1,32 @@
-// webpack.config.js
-const path = require('path');
-const nodeExternals = require('webpack-node-externals');
+import path, { dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-module.exports = {
-  target: 'node', // Indicates that we are building for Node.js, not browser
-  mode: 'development', // Use 'development' for debugging or 'production' for release
-  entry: './src/index.ts', // Main entry point of your application
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+export default {
+  entry: './src/index.ts', // Entry point for your TypeScript code
   output: {
+    filename: 'bundle.js', // Output bundle name
     path: path.resolve(__dirname, 'dist'), // Output directory
-    filename: 'bundle.js', // Output file
+    libraryTarget: 'module', // Ensure Webpack outputs ESM-compatible code
+    module: true,
   },
-  externals: [nodeExternals()], // Exclude node_modules from the output bundle
+  resolve: {
+    extensions: ['.ts', '.js'], // Supported file extensions
+  },
   module: {
     rules: [
       {
-        test: /\.ts$/, // Apply ts-loader for .ts files
-        exclude: /node_modules/,
-        use: 'ts-loader',
+        test: /\.ts$/, // Match .ts files
+        use: 'ts-loader', // Use ts-loader to handle TypeScript
+        exclude: /node_modules/, // Exclude dependency files
       },
     ],
   },
-  resolve: {
-    extensions: ['.js', '.ts'], // Add .ts to the list of resolved extensions
+  target: 'node', // Target Node.js environment
+  mode: 'production', // Enable production optimizations
+  experiments: {
+    outputModule: true, // Enable ESM output
   },
 };

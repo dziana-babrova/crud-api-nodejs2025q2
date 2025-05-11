@@ -5,8 +5,9 @@
   "main": "index.ts",
   "type": "module",
   "scripts": {
-    "build": "webpack",
-    "dev": "nodemon",
+    "start:dev": "nodemon",
+    "build": "webpack --config webpack.config.js",
+    "start:prod": "npm run build && node dist/bundle.js",
     "lint": "eslint . --ext .ts,.js,.tsx",
     "format": "prettier . --write"
   },
