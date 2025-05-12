@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "target": "ESNext", // Use the latest ECMAScript features
+    "module": "ESNext", // Generate ES Modules
+    "moduleResolution": "node", // Resolve modules like Node.js
+    "outDir": "./dist", // Output directory for TypeScript build
+    "strict": true, // Enable strict type checking
+    "esModuleInterop": true, // Allow compatibility with CommonJS modules
+    "skipLibCheck": true // Skip type checks on libraries
+  },
+  "include": ["src/**/*.ts"], // Include all TS files in the src folder
+  "exclude": ["node_modules"] // Exclude dependencies
+}
