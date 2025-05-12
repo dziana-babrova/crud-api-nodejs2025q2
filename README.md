@@ -15,16 +15,21 @@ Task link: [https://github.com/AlreadyBored/nodejs-assignments/blob/main/assignm
 
 ## Scripts
 
-`npm run start:dev` - to start the app in **development mode**
-`npm run start:prod` - to start the app in **production mode**
-`npm run start:multi` - to start horizontally scaled app
-`npm run test` - to run tests
+- `npm run start:dev` - to start the app in **development mode**
+- `npm run start:prod` - to start the app in **production mode**
+- `npm run start:multi` - to start horizontally scaled app
+- `npm run test` - to run tests
 
 ## Endpoints
 
 GET `/api/users` - get all users
+
 GET `/api/users/{userId}` - get user by id
+
 POST `/api/userscreate` - create user
+
 PUT `/api/users/{userId}` - edit user
+
 DELETE `/api/users/{userId}` - delete user
+
 GET `/server/error` - generate an error to test answer with status code `500`
