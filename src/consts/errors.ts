@@ -5,4 +5,7 @@ export const ERRORS = {
   INVALID_BODY: 'Invalid request body',
   MISSING_REQUIRED_FIELD: 'Request body does not contain required fields',
   SERVER_ERROR: 'Server error occurred when processing request',
+  NO_WORKERS_AVAILABLE: 'No workers are available to process requests',
+  INTERNAL_SERVER_ERROR: 'Internal Server Error',
+  NO_WORKERS_FOUND: 'Worker not found',
 };

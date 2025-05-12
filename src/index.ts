@@ -1,44 +1,84 @@
-import 'dotenv/config';
-import { createServer, IncomingMessage, ServerResponse } from 'http';
-import { parse } from 'url';
-import { METHODS } from './consts/methods';
-import { handleGetRequest } from './handlers/getHandler';
-import { handlePostRequest } from './handlers/postHandler';
-import { handlePutRequest } from './handlers/putHaldler';
-import { handleDeleteRequest } from './handlers/deleteHandler';
+import cluster from 'cluster';
+import { availableParallelism } from 'node:os';
+import http, { IncomingMessage, ServerResponse } from 'http';
+import { startApp } from './server';
 import { sendResponse } from './helpers/sendResponse';
 import { STATUS_CODES } from './consts/statusCodes';
 import { ERRORS } from './consts/errors';
 
-const server = createServer(
-  async (request: IncomingMessage, response: ServerResponse) => {
-    try {
-      const method = request.method;
-      const parsedUrl = parse(request.url || '', true);
-      const path = parsedUrl.pathname;
+const PORT = process.env.PORT || 4000;
+const isMulti = process.env.mode === 'multi';
+let currentWorkerIndex = 0;
 
-      if (method === METHODS.GET) {
-        await handleGetRequest(request, response, path);
-      } else if (method === METHODS.POST) {
-        await handlePostRequest(request, response, path);
-      } else if (method === METHODS.PUT) {
-        await handlePutRequest(request, response, path);
-      } else if (method === METHODS.DELETE) {
-        await handleDeleteRequest(request, response, path);
-      } else {
-        sendResponse(response, STATUS_CODES.NOT_FOUND, {});
-      }
-    } catch {
-      sendResponse(
-        response,
-        STATUS_CODES.SERVER_UNAVAILABLE,
-        ERRORS.SERVER_ERROR
-      );
+if (isMulti) {
+  if (cluster.isPrimary) {
+    console.log(`Primary process ${process.pid} is running.`);
+    console.log(`Creating ${availableParallelism()} workers...`);
+
+    for (let i = 0; i < availableParallelism(); i++) {
+      cluster.fork();
     }
-  }
-);
 
-const PORT = process.env.PORT || 3000;
-server.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
-});
+    cluster.on('exit', (worker, code, signal) => {
+      console.error(`Worker ${worker.process.pid} died.`);
+      console.log('Spawning a new worker...');
+      cluster.fork();
+    });
+
+    const loadBalancer = startApp();
+
+    loadBalancer.on('request', (req: IncomingMessage, res: ServerResponse) => {
+      const workerList = Object.values(cluster.workers ?? {});
+      if (workerList.length === 0) {
+        sendResponse(res, STATUS_CODES.SERVER_UNAVAILABLE, {
+          error: ERRORS.NO_WORKERS_AVAILABLE,
+        });
+        return;
+      }
+
+      const worker = workerList[currentWorkerIndex];
+      currentWorkerIndex = (currentWorkerIndex + 1) % workerList.length;
+
+      if (worker) {
+        const workerPort = Number(PORT) + worker.id;
+        const target = `http://localhost:${workerPort}${req.url}`;
+
+        const proxyReq = http.request(
+          target,
+          {
+            method: req.method,
+            headers: req.headers,
+          },
+          (proxyRes) => {
+            proxyRes.pipe(res, { end: true });
+          }
+        );
+
+        req.pipe(proxyReq, { end: true });
+
+        proxyReq.on('error', (err) => {
+          console.error(`Error forwarding request: ${err.message}`);
+          sendResponse(res, STATUS_CODES.SERVER_UNAVAILABLE, {
+            error: ERRORS.INTERNAL_SERVER_ERROR,
+          });
+        });
+      } else {
+        sendResponse(res, STATUS_CODES.SERVER_UNAVAILABLE, {
+          error: ERRORS.NO_WORKERS_FOUND,
+        });
+      }
+    });
+  } else {
+    const serverPort = Number(PORT) + cluster.worker!.id;
+    const server = http.createServer((_req, res) => {
+      sendResponse(res, STATUS_CODES.CREATED, {
+        message: `Response from Worker ${serverPort}, PID: ${process.pid}`,
+      });
+    });
+    server.listen(serverPort, () => {
+      console.log(`Worker ${process.pid} listening on port ${serverPort}`);
+    });
+  }
+} else {
+  startApp();
+}
