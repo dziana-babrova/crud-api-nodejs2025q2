@@ -10,7 +10,7 @@ import { sendResponse } from './helpers/sendResponse';
 import { STATUS_CODES } from './consts/statusCodes';
 import { ERRORS } from './consts/errors';
 
-const server = createServer(
+export const server = createServer(
   async (request: IncomingMessage, response: ServerResponse) => {
     try {
       const method = request.method;
