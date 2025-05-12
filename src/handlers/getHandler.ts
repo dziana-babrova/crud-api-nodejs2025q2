@@ -12,7 +12,7 @@ export const handleGetRequest = async (
 ) => {
   if ((pathname && pathname === '/api/users') || pathname === '/api/users/') {
     sendResponse(response, STATUS_CODES.SUCCESS, users);
-  } else if (pathname && pathname.startsWith('api/users/')) {
+  } else if (pathname && pathname.startsWith('/api/users/')) {
     const id = pathname.split('/').pop();
     if (id && validate(id)) {
       const data = users.find((user) => user.id === id);
@@ -28,6 +28,9 @@ export const handleGetRequest = async (
         error: ERRORS.USERID_NOT_VALID,
       });
     }
+  }
+  if (pathname && pathname === '/server/error') {
+    throw new Error();
   } else {
     sendResponse(response, STATUS_CODES.NOT_FOUND, {
       error: ERRORS.ENDPOINT_NOT_FOUND,
