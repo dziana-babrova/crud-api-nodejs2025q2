@@ -6,7 +6,7 @@ import { validate } from 'uuid';
 import { users } from '../database/users';
 
 export const handleDeleteRequest = async (
-  request: IncomingMessage,
+  _request: IncomingMessage,
   response: ServerResponse,
   pathname: string | null
 ) => {

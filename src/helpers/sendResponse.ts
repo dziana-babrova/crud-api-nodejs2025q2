@@ -1,9 +1,9 @@
 import { ServerResponse } from 'http';
 
-export const sendResponse = async (
+export const sendResponse = async <T>(
   response: ServerResponse,
   statusCode: number,
-  data: any
+  data: T
 ) => {
   response.writeHead(statusCode, { 'Content-Type': 'application/json' });
   response.end(JSON.stringify(data));

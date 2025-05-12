@@ -4,7 +4,7 @@ import { STATUS_CODES } from '../consts/statusCodes';
 import { ERRORS } from '../consts/errors';
 import { parseRequestBody } from '../helpers/parseBody';
 import { validateUser } from '../helpers/validateUser';
-import { usersType } from '../database/users';
+import { users, usersType } from '../database/users';
 
 export const handlePostRequest = async (
   request: IncomingMessage,
@@ -17,7 +17,7 @@ export const handlePostRequest = async (
       const validatedUser = validateUser(user);
 
       if (validatedUser) {
-        user.push(validatedUser);
+        users.push(validatedUser);
         sendResponse(response, STATUS_CODES.CREATED, validatedUser);
       } else {
         sendResponse(response, STATUS_CODES.BAD_REQUEST, {

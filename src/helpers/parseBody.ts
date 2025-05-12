@@ -1,8 +1,9 @@
 import { IncomingMessage } from 'http';
+import { usersType } from '../database/users';
 
-export const parseRequestBody: (request: IncomingMessage) => Promise<any> = (
-  request
-) => {
+export const parseRequestBody: (
+  request: IncomingMessage
+) => Promise<usersType> = (request) => {
   return new Promise((resolve, reject) => {
     let body = '';
     request.on('data', (chunk) => {
